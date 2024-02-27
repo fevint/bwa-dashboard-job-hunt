@@ -9,14 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { JOB_LISTING_COLUMNS, JOB_LISTING_DATA } from "@/constants";
-import { Badge } from "@/components/ui/badge"; 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ButtonActionTable from "@/components/organisms/ButtonActionTable";
 
 type paramsType = {
   id: string;
-};   
+};
 interface JobDetailPageProps {
   params: paramsType;
 }
@@ -43,7 +44,6 @@ export const revalidate = 0;
 
 const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
   //   const job = await getDetailJob(params.id);
-  const router = useRouter();
 
   return (
     <div>
@@ -76,13 +76,7 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
                   {item.applicants} / {item.needs}{" "}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    onClick={() => router.push(`/job-detail/${item.id}`)}
-                    size="icon"
-                    variant={"outline"}
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
+                  <ButtonActionTable url="/job-detail/1" />
                 </TableCell>
               </TableRow>
             ))}
