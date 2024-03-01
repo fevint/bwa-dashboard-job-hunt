@@ -17,6 +17,9 @@ import {
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+
 interface SignUpPageProps {}
 
 const SignUpPage: FC<SignUpPageProps> = ({}) => {
@@ -24,8 +27,30 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit = (val: z.infer<typeof signUpFormSchema>) => {
-    console.log(val);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const onSubmit = async (val: z.infer<typeof signUpFormSchema>) => {
+    try {
+      await fetch("/api/company/new-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(val),
+      });
+
+      await router.push("/auth/signin");
+      // const data = await response.json();
+      // console.log(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+        variant: "destructive",
+      });
+      console.log(error);
+    }
   };
   return (
     <div className="relative w-full h-screen">
