@@ -13,6 +13,7 @@ import {
 } from "react-icons/ai";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import { BsBuildings, BsGear } from "react-icons/bs";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {}
 
@@ -87,7 +88,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full text-red-500 hover:bg-red-200 hover:text-red-500 justify-start rounded-none"
-              // onClick={() => signOut()}
+              onClick={() => signOut()}
             >
               <AiOutlineLogout className="mr-2 text-lg" />
               Logout
