@@ -14,38 +14,45 @@ import {
 import { JOB_APPLICANT_COLUMNS, JOB_APPLICANT_DATA } from "@/constants";
 import ButtonActionTable from "../ButtonActionTable";
 import { Badge } from "@/components/ui/badge";
-// import { Applicant, User } from "@prisma/client";
+import { Applicant, User } from "@prisma/client";
 
-// type applicantType = {
-// //   user: User | null;
-// } & Applicant;
+type applicantType = {
+  user: User | null;
+} & Applicant;
 
 interface ApplicantsProps {
-  //   applicants: applicantType[] | undefined;
+  applicants: applicantType[] | undefined;
 }
 
-const Applicants: FC<ApplicantsProps> = () => {
+const Applicants: FC<ApplicantsProps> = ({ applicants }) => {
   return (
     <div>
       <Table>
         <TableHeader>
           <TableRow>
-            {JOB_APPLICANT_COLUMNS.map((item: string, i: number) => (
-              <TableHead key={item + i}>{item}</TableHead>
-            ))}
+            {applicants && (
+              <>
+                {JOB_APPLICANT_COLUMNS.map((item: any, i: number) => (
+                  <TableHead key={item + i}>{item}</TableHead>
+                ))}
+              </>
+            )}
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {JOB_APPLICANT_DATA.map((item: any, i: number) => (
-            <TableRow key={item.name + i}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.appliedDate}</TableCell>
-              <TableCell>
-                <ButtonActionTable url="" />
-              </TableCell>
-            </TableRow>
-          ))}
+          {applicants && (
+            <>
+              {applicants.map((item: any, i: number) => (
+                <TableRow key={item.id + i}>
+                  <TableCell>{item.user.name}</TableCell>
+                  <TableCell>
+                    <ButtonActionTable url="" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
+          )}
         </TableBody>
       </Table>
     </div>

@@ -1,11 +1,12 @@
-"use client";
-
 import Applicants from "@/components/organisms/Applicants";
 import JobDetail from "@/components/organisms/JobDetail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
+import prisma from "../../../../../lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 type paramsType = {
   id: string;
@@ -17,24 +18,28 @@ interface JobDetailPageProps {
 export const revalidate = 0;
 
 async function getDetailJob(id: string) {
-  // const job = await prisma.job.findFirst({
-  //   where: {
-  //     id: id,
-  //   },
-  //   include: {
-  //     applicant: {
-  //       include: {
-  //         user: true,
-  //       },
-  //     },
-  //     CategoryJob: true,
-  //   },
-  // });
-  // return job;
+  const job = await prisma?.job.findFirst({
+    where: {
+      id: id,
+    },
+    include: {
+      applicant: {
+        include: {
+          user: true,
+        },
+      },
+      CategoryJob: true,
+    },
+  });
+  return job;
 }
 
 const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
+  const session = await getServerSession(authOptions);
+
   const job = await getDetailJob(params.id);
+
+  console.log(job);
 
   return (
     <div>
@@ -45,8 +50,11 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
           </Link>
         </div>
         <div>
-          <div className="text-2xl font-semibold mb-1">Twitter</div>
-          <div>asd . asd . asd/ 1/10 Hired</div>
+          <div className="text-2xl font-semibold mb-1">{job?.roles}</div>
+          <div>
+            {job?.CategoryJob?.name} . {job?.jobType} . {job?.applicants || 0} /
+            {job?.needs || 0} Hired
+          </div>
         </div>
       </div>
 
@@ -56,10 +64,10 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
           <TabsTrigger value="jobDetails">Job Details</TabsTrigger>
         </TabsList>
         <TabsContent value="applicants">
-          <Applicants />
+          <Applicants applicants={job?.applicant} />
         </TabsContent>
         <TabsContent value="jobDetails">
-          <JobDetail />
+          <JobDetail detail={job} />
         </TabsContent>
       </Tabs>
     </div>
